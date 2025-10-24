@@ -12,8 +12,14 @@ var _ = os.Stdout
 func main() {
 	var IN = os.Stdin
 	var OUT = os.Stdout
-	fmt.Fprint(OUT, "$ ")
-	var command string
-	fmt.Fscanln(IN, &command)
-	fmt.Fprintf(OUT, "%s: command not found\n", command)
+	for {
+		fmt.Fprint(OUT, "$ ")
+		var command string
+		_, err := fmt.Fscanln(IN, &command)
+		if err != nil {
+			fmt.Fprintln(OUT, "Error reading input:", err)
+			continue
+		}
+		fmt.Fprintf(OUT, "%s: command not found\n", command)
+	}
 }
