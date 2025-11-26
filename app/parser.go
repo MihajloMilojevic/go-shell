@@ -18,6 +18,9 @@ func Parse(cmd string) (commands.Command, error) {
 	args := parts[1:]
 	if constructor, ok := registries.GetBuiltInConstructor(cmd); ok {
 		return constructor(cmd, args), nil
+	} 
+	if constructor, ok := registries.GetExecutableConstructor(cmd); ok {
+		return constructor(cmd, args), nil
 	}
 	return commands.NewUnknownCommand(cmd, args), nil
 }
