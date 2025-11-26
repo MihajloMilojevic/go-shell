@@ -16,7 +16,7 @@ func Parse(cmd string) (commands.Command, error) {
 	}
 	cmd = parts[0]
 	args := parts[1:]
-	if constructor, ok := registries.BuiltIns[cmd]; ok {
+	if constructor, ok := registries.GetBuiltInConstructor(cmd); ok {
 		return constructor(cmd, args), nil
 	}
 	return commands.NewUnknownCommand(cmd, args), nil

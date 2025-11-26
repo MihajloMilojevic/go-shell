@@ -20,8 +20,10 @@ func (c *TypeCommand) Execute(IN, OUT *os.File) (bool, error) {
 	if len(c.args) == 0 {
 		return false, errors.New("type: missing operand")
 	}
-	if _, ok := registries.BuiltIns[c.args[0]]; ok {
+	if ok := registries.IsBuiltin(c.args[0]); ok {
 		OUT.WriteString(c.args[0] + " is a shell builtin\n")
+	} else if path, ok := registries.GetExecutablePath(c.args[0]); ok {
+		OUT.WriteString(c.args[0] + " is " + path + "\n")
 	} else {
 		OUT.WriteString(c.args[0] + ": not found\n")
 	}
