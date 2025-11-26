@@ -1,8 +1,11 @@
 package main
 
 import (
+	"bufio"
 	"fmt"
+	"io"
 	"os"
+	"strings"
 )
 
 // Ensures gofmt doesn't remove the "fmt" and "os" imports in stage 1 (feel free to remove this!)
@@ -15,12 +18,24 @@ func main() {
 	for {
 		fmt.Fprint(OUT, "$ ")
 		var command string
-		_, err := fmt.Fscanln(IN, &command)
+		reader := bufio.NewReader(IN)
+		line, err := reader.ReadString('\n')
 		if err != nil {
+			if err == io.EOF {
+				break
+			}
 			fmt.Fprintln(OUT, "Error reading input:", err)
 			continue
 		}
-		cmd := Parse(command)
+		if strings.TrimSpace(line) == "" {
+			continue
+		}
+		command = strings.TrimRight(line, "\r\n")
+		cmd, err := Parse(command)
+		if err != nil {
+			fmt.Fprintln(OUT, "Error parsing command:", err)
+			continue
+		}
 		shouldExit, err := cmd.Execute(IN, OUT)
 		if err != nil {
 			fmt.Fprintln(OUT, "Error executing command:", err)
