@@ -20,6 +20,13 @@ func main() {
 			fmt.Fprintln(OUT, "Error reading input:", err)
 			continue
 		}
-		fmt.Fprintf(OUT, "%s: command not found\n", command)
+		cmd := Parse(command)
+		shouldExit, err := cmd.Execute(IN, OUT)
+		if err != nil {
+			fmt.Fprintln(OUT, "Error executing command:", err)
+		}
+		if shouldExit {
+			break
+		}
 	}
 }
