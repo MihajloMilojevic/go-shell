@@ -1,23 +1,25 @@
 package main
 
 import (
+	"errors"
+
 	"github.com/codecrafters-io/shell-starter-go/app/commands"
+	"github.com/codecrafters-io/shell-starter-go/app/commands/registries"
+
+	_ "github.com/codecrafters-io/shell-starter-go/app/commands/builtins"
 )
 
 func Parse(cmd string) (commands.Command, error) {
 	parts := splitCmd(cmd)
 	if len(parts) == 0 {
-		return commands.NewNilCommand(), nil
+		return nil, errors.New("empty command")
 	}
 	cmd = parts[0]
 	args := parts[1:]
-	switch cmd {
-	case "echo":
-		return commands.NewEchoCommand(args), nil
-	case "exit":
-		return commands.NewExitCommand(), nil
+	if constructor, ok := registries.BuiltIns[cmd]; ok {
+		return constructor(cmd, args), nil
 	}
-	return commands.NewUnknownCommand(cmd), nil
+	return commands.NewUnknownCommand(cmd, args), nil
 }
 
 func splitCmd(cmd string) []string {

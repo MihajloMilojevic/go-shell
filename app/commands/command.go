@@ -7,12 +7,4 @@ type Command interface {
 	Execute(IN, OUT *os.File) (bool, error)
 }
 
-type NilCommand struct{}
 
-func (c *NilCommand) Execute(IN, OUT *os.File) (bool, error) {
-	return false, nil
-}
-
-func NewNilCommand() *NilCommand {
-	return &NilCommand{}
-}
